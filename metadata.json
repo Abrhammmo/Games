@@ -1,0 +1,5 @@
+{
+  "name": "Game Hub: Tic-Tac-Toe, Snake, & Tetris",
+  "description": "A game launcher application featuring three classic games: Tic-Tac-Toe, Snake, and Tetris. All scores and game statistics are saved using Firebase Firestore.",
+  "requestFramePermissions": []
+}
