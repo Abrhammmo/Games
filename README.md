@@ -34,19 +34,19 @@ TypeScript	Strong typing & maintainability
 Vite	Fast build + development server
 Firebase	Backend services (optional)
 🛠️ Installation & Setup
-# Clone the repository
+clone the repository
 git clone <your-repo-url>
 
-# Navigate to the project folder
+Navigate to the project folder
 cd <project-folder>
 
-# Install dependencies
+Install dependencies
 npm install
 
-# Run the development server
+Run the development server
 npm run dev
 
-📦 Build for Production
+**📦 Build for ProductionZ**
 npm run build
 
 
