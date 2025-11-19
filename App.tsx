@@ -4,7 +4,7 @@ import Home from './components/Home';
 import TicTacToe from './components/TicTacToe';
 import Snake from './components/Snake';
 import Tetris from './components/Tetris';
-import Sudoku from './components/Sudoku'; // Import Sudoku
+import Sudoku from './components/sudoku';
 import { getGameData, updateGameData, appId, performAnonymousSignIn, isDemoMode } from './services/firebaseService';
 import type { GameData, View } from './types';
 import { LoaderIcon, InfoIcon } from './components/Icons';
