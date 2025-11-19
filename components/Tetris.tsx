@@ -1,8 +1,7 @@
 
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import type { GameData } from '../types';
-import { ArrowLeftIcon, PlayIcon, RefreshIcon } from './Icons';
+import { ArrowLeftIcon, PlayIcon, RefreshIcon, PauseIcon } from './Icons';
 
 interface TetrisProps {
     gameData: GameData;
@@ -309,7 +308,12 @@ const Tetris: React.FC<TetrisProps> = ({ gameData, onDataUpdate, navigateHome })
             <div className="w-full flex justify-between items-center mb-2">
                 <button onClick={navigateHome} className="p-2 rounded-full hover:bg-gray-700 transition"><ArrowLeftIcon className="w-6 h-6" /></button>
                 <h2 className="text-2xl font-bold text-amber-400">Tetris</h2>
-                <button onClick={resetGame} className="p-2 rounded-full hover:bg-gray-700 transition"><RefreshIcon className="w-6 h-6" /></button>
+                 <div className="flex space-x-2">
+                     <button onClick={() => setIsPaused(!isPaused)} className="p-2 rounded-full hover:bg-gray-700 transition">
+                        {isPaused ? <PlayIcon className="w-6 h-6 text-yellow-400" /> : <PauseIcon className="w-6 h-6" />}
+                    </button>
+                    <button onClick={resetGame} className="p-2 rounded-full hover:bg-gray-700 transition"><RefreshIcon className="w-6 h-6" /></button>
+                </div>
             </div>
             
             <div className="flex w-full justify-center items-start space-x-4">
@@ -326,7 +330,7 @@ const Tetris: React.FC<TetrisProps> = ({ gameData, onDataUpdate, navigateHome })
                             ) : (
                                 <>
                                    <h3 className="text-3xl font-bold text-white mb-2">Game Paused</h3>
-                                   <p className="mb-4 text-gray-300">Use Arrow Keys or Space to Start</p>
+                                   <p className="mb-4 text-gray-300">Use Arrow Keys, Space, or Play Button</p>
                                    <button onClick={() => setIsPaused(false)} className="p-4 bg-teal-500 rounded-full hover:bg-teal-600 transition animate-pulse">
                                        <PlayIcon className="w-8 h-8 text-white" />
                                    </button>

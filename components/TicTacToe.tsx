@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import type { GameData } from '../types';
-import { ArrowLeftIcon, RefreshIcon, UserIcon, RobotIcon, TrophyIcon } from './Icons';
+import { ArrowLeftIcon, RefreshIcon, UserIcon, RobotIcon, TrophyIcon, PauseIcon, PlayIcon } from './Icons';
 
 type Player = 'X' | 'O' | null;
 type Difficulty = 'Easy' | 'Medium' | 'Hard';
@@ -17,6 +18,7 @@ const TicTacToe: React.FC<TicTacToeProps> = ({ gameData, onDataUpdate, navigateH
     const [winner, setWinner] = useState<Player | 'Draw' | null>(null);
     const [statusMessage, setStatusMessage] = useState('Your Turn (X)');
     const [difficulty, setDifficulty] = useState<Difficulty>('Medium');
+    const [isPaused, setIsPaused] = useState(false);
 
     const isGameInProgress = board.some(cell => cell !== null) && !winner;
 
@@ -43,10 +45,11 @@ const TicTacToe: React.FC<TicTacToeProps> = ({ gameData, onDataUpdate, navigateH
         setIsPlayerTurn(true);
         setWinner(null);
         setStatusMessage('Your Turn (X)');
+        setIsPaused(false);
     }, []);
 
     const handlePlayerMove = (index: number) => {
-        if (board[index] || winner || !isPlayerTurn) return;
+        if (board[index] || winner || !isPlayerTurn || isPaused) return;
         
         const newBoard = [...board];
         newBoard[index] = 'X';
@@ -152,7 +155,7 @@ const TicTacToe: React.FC<TicTacToeProps> = ({ gameData, onDataUpdate, navigateH
     }, [winner]);
     
     useEffect(() => {
-        if (!isPlayerTurn && !winner) {
+        if (!isPlayerTurn && !winner && !isPaused) {
             const timeoutId = setTimeout(() => {
                 const newBoard = [...board];
                 
@@ -178,7 +181,7 @@ const TicTacToe: React.FC<TicTacToeProps> = ({ gameData, onDataUpdate, navigateH
             return () => clearTimeout(timeoutId);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isPlayerTurn, winner, board, difficulty]);
+    }, [isPlayerTurn, winner, board, difficulty, isPaused]);
 
     const getStatusColor = () => {
         if (winner === 'X') return 'text-teal-400';
@@ -188,23 +191,41 @@ const TicTacToe: React.FC<TicTacToeProps> = ({ gameData, onDataUpdate, navigateH
     };
 
     return (
-        <div className="flex flex-col items-center p-4 bg-gray-800 rounded-2xl shadow-lg w-full max-w-sm animate-fade-in">
+        <div className="flex flex-col items-center p-4 bg-gray-800 rounded-2xl shadow-lg w-full max-w-sm animate-fade-in relative">
             <div className="w-full flex justify-between items-center mb-4">
                 <button onClick={navigateHome} className="p-2 rounded-full hover:bg-gray-700 transition"><ArrowLeftIcon className="w-6 h-6" /></button>
                 <h2 className="text-2xl font-bold text-teal-400">Tic-Tac-Toe</h2>
-                <button onClick={resetGame} className="p-2 rounded-full hover:bg-gray-700 transition"><RefreshIcon className="w-6 h-6" /></button>
+                <div className="flex space-x-2">
+                     <button onClick={() => setIsPaused(!isPaused)} className="p-2 rounded-full hover:bg-gray-700 transition">
+                        {isPaused ? <PlayIcon className="w-6 h-6 text-yellow-400" /> : <PauseIcon className="w-6 h-6" />}
+                    </button>
+                    <button onClick={resetGame} className="p-2 rounded-full hover:bg-gray-700 transition"><RefreshIcon className="w-6 h-6" /></button>
+                </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 w-full aspect-square mb-4">
-                {board.map((value, index) => (
-                    <div
-                        key={index}
-                        onClick={() => handlePlayerMove(index)}
-                        className={`flex items-center justify-center bg-gray-900 rounded-lg cursor-pointer transition ${!value && isPlayerTurn && !winner ? 'hover:bg-gray-700' : ''}`}
-                    >
-                        <span className={`text-5xl font-bold ${value === 'X' ? 'text-teal-400' : 'text-indigo-400'}`}>{value}</span>
+            <div className="relative">
+                <div className="grid grid-cols-3 gap-2 w-full aspect-square mb-4">
+                    {board.map((value, index) => (
+                        <div
+                            key={index}
+                            onClick={() => handlePlayerMove(index)}
+                            className={`flex items-center justify-center bg-gray-900 rounded-lg cursor-pointer transition ${!value && isPlayerTurn && !winner && !isPaused ? 'hover:bg-gray-700' : ''}`}
+                        >
+                            <span className={`text-5xl font-bold ${value === 'X' ? 'text-teal-400' : 'text-indigo-400'}`}>{value}</span>
+                        </div>
+                    ))}
+                </div>
+                {isPaused && (
+                     <div className="absolute inset-0 bg-gray-900/90 rounded-lg flex flex-col items-center justify-center z-10 backdrop-blur-sm">
+                        <h3 className="text-2xl font-bold text-white mb-4">Game Paused</h3>
+                        <button 
+                            onClick={() => setIsPaused(false)} 
+                            className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded-full flex items-center transition-transform hover:scale-105"
+                        >
+                            <PlayIcon className="w-5 h-5 mr-2" /> Resume
+                        </button>
                     </div>
-                ))}
+                )}
             </div>
             
             <p className={`text-xl font-semibold mb-4 h-7 ${getStatusColor()}`}>{statusMessage}</p>
@@ -231,7 +252,7 @@ const TicTacToe: React.FC<TicTacToeProps> = ({ gameData, onDataUpdate, navigateH
                          <button 
                             key={level}
                             onClick={() => setDifficulty(level)}
-                            disabled={isGameInProgress}
+                            disabled={isGameInProgress || isPaused}
                             className={`px-4 py-1 text-sm font-semibold rounded-md transition ${
                                 difficulty === level 
                                 ? 'bg-teal-500 text-white' 

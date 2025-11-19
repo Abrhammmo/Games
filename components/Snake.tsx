@@ -1,8 +1,7 @@
 
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import type { GameData } from '../types';
-import { ArrowLeftIcon, PlayIcon, RefreshIcon } from './Icons';
+import { ArrowLeftIcon, PlayIcon, RefreshIcon, PauseIcon } from './Icons';
 
 interface SnakeProps {
     gameData: GameData;
@@ -202,7 +201,12 @@ const Snake: React.FC<SnakeProps> = ({ gameData, onDataUpdate, navigateHome }) =
             <div className="w-full flex justify-between items-center mb-2">
                 <button onClick={navigateHome} className="p-2 rounded-full hover:bg-gray-700 transition"><ArrowLeftIcon className="w-6 h-6" /></button>
                 <h2 className="text-2xl font-bold text-indigo-400">Snake</h2>
-                <button onClick={resetGame} className="p-2 rounded-full hover:bg-gray-700 transition"><RefreshIcon className="w-6 h-6" /></button>
+                <div className="flex space-x-2">
+                     <button onClick={() => setIsPaused(!isPaused)} className="p-2 rounded-full hover:bg-gray-700 transition">
+                        {isPaused ? <PlayIcon className="w-6 h-6 text-yellow-400" /> : <PauseIcon className="w-6 h-6" />}
+                    </button>
+                    <button onClick={resetGame} className="p-2 rounded-full hover:bg-gray-700 transition"><RefreshIcon className="w-6 h-6" /></button>
+                </div>
             </div>
             
             <div className="w-full flex justify-between px-2 mb-2 text-lg">
@@ -227,7 +231,7 @@ const Snake: React.FC<SnakeProps> = ({ gameData, onDataUpdate, navigateHome }) =
                         ) : (
                              <>
                                 <h3 className="text-3xl font-bold text-white mb-2">Game Paused</h3>
-                                <p className="mb-4 text-gray-300">Use Arrow Keys or Swipe to Start</p>
+                                <p className="mb-4 text-gray-300">Use Arrow Keys, Swipe, or Play Button</p>
                                 <button onClick={() => setIsPaused(false)} className="p-4 bg-teal-500 rounded-full hover:bg-teal-600 transition animate-pulse">
                                     <PlayIcon className="w-8 h-8 text-white" />
                                 </button>

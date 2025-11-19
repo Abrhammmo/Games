@@ -1,3 +1,4 @@
+
 // FIX: Refactored to use Firebase v8 compat syntax to fix module import errors.
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
@@ -72,6 +73,10 @@ const DEFAULT_GAME_DATA: GameData = {
     },
     tetris: {
         highScore: 0,
+    },
+    sudoku: {
+        gamesWon: 0,
+        bestTime: 0,
     }
 };
 
@@ -90,7 +95,8 @@ export const getGameData = async (userId: string, currentAppId: string): Promise
                  return {
                     ticTacToe: { ...DEFAULT_GAME_DATA.ticTacToe, ...parsedData.ticTacToe },
                     snake: { ...DEFAULT_GAME_DATA.snake, ...parsedData.snake },
-                    tetris: { ...DEFAULT_GAME_DATA.tetris, ...parsedData.tetris }
+                    tetris: { ...DEFAULT_GAME_DATA.tetris, ...parsedData.tetris },
+                    sudoku: { ...DEFAULT_GAME_DATA.sudoku, ...parsedData.sudoku }
                 };
             } catch (e) {
                 console.error("Could not parse local data, returning default.", e);
@@ -111,7 +117,8 @@ export const getGameData = async (userId: string, currentAppId: string): Promise
         return {
             ticTacToe: { ...DEFAULT_GAME_DATA.ticTacToe, ...data.ticTacToe },
             snake: { ...DEFAULT_GAME_DATA.snake, ...data.snake },
-            tetris: { ...DEFAULT_GAME_DATA.tetris, ...data.tetris }
+            tetris: { ...DEFAULT_GAME_DATA.tetris, ...data.tetris },
+            sudoku: { ...DEFAULT_GAME_DATA.sudoku, ...data.sudoku }
         };
     } else {
         console.log("No such document! Creating with default data.");

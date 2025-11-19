@@ -1,3 +1,4 @@
+
 import React from 'react';
 import type { GameData, View } from '../types';
 import { GamepadIcon, CrownIcon } from './Icons';
@@ -9,6 +10,13 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ gameData, navigateTo, userId }) => {
+    const formatTime = (seconds: number) => {
+        if (!seconds) return '--:--';
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
+
     return (
         <div className="bg-gray-800 p-6 rounded-2xl shadow-lg w-full max-w-sm text-center animate-fade-in">
             <div className="flex justify-center items-center mb-4">
@@ -37,6 +45,12 @@ const Home: React.FC<HomeProps> = ({ gameData, navigateTo, userId }) => {
                 >
                     Play Tetris
                 </button>
+                <button
+                    onClick={() => navigateTo('SUDOKU')}
+                    className="w-full bg-rose-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-rose-600 transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-opacity-75"
+                >
+                    Play Sudoku
+                </button>
             </div>
             
             <div className="bg-gray-700/50 p-4 rounded-lg">
@@ -56,6 +70,10 @@ const Home: React.FC<HomeProps> = ({ gameData, navigateTo, userId }) => {
                      <div className="flex justify-between items-center bg-gray-800/50 p-2 rounded-md">
                         <span className="font-semibold text-gray-300">Tetris High Score:</span>
                         <span className="font-bold text-amber-400 text-lg">{gameData.tetris.highScore}</span>
+                    </div>
+                    <div className="flex justify-between items-center bg-gray-800/50 p-2 rounded-md">
+                        <span className="font-semibold text-gray-300">Sudoku Best Time:</span>
+                        <span className="font-bold text-rose-400 text-lg">{formatTime(gameData.sudoku.bestTime)}</span>
                     </div>
                 </div>
             </div>
