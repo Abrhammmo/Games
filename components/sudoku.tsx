@@ -80,11 +80,6 @@ const generateSudoku = (size: number, difficulty: 'Easy' | 'Medium' | 'Hard'): {
     const grid: Grid = Array.from({ length: size }, () => Array(size).fill(0));
 
     // 1. Fill Diagonal Boxes (Optimization for randomness)
-    // For 9x9 (3x3 boxes): (0,0), (3,3), (6,6) are independent.
-    // For 6x6 (2x3 boxes): (0,0) and (4,3) [row 4, col 3] are independent?
-    // To keep it simple and generic: simply use the solver with random seed injection or 
-    // just try to fill the first box randomly.
-    
     const fillBox = (r: number, c: number) => {
         let num: number;
         for (let i = 0; i < config.boxH; i++) {
@@ -110,9 +105,6 @@ const generateSudoku = (size: number, difficulty: 'Easy' | 'Medium' | 'Hard'): {
     }
 
     // Fill diagonal boxes roughly.
-    // We step by boxHeight for rows and boxWidth for cols.
-    // e.g. 9x9: (0,0), (3,3), (6,6).
-    // e.g. 6x6: (0,0), (2,3), (4,6)->Out.
     for (let i = 0; i * config.boxH < size && i * config.boxW < size; i++) {
         fillBox(i * config.boxH, i * config.boxW);
     }
@@ -222,12 +214,22 @@ const Sudoku: React.FC<SudokuProps> = ({ gameData, onDataUpdate, navigateHome })
     const handleWin = () => {
         setGameWon(true);
         const prevStats = gameData.sudoku;
-        const newBestTime = prevStats.bestTime === 0 ? timer : Math.min(prevStats.bestTime, timer);
+        
+        let newBestTime6x6 = prevStats.bestTime6x6;
+        let newBestTime9x9 = prevStats.bestTime9x9;
+
+        if (gridSize === 6) {
+            newBestTime6x6 = prevStats.bestTime6x6 === 0 ? timer : Math.min(prevStats.bestTime6x6, timer);
+        } else {
+            newBestTime9x9 = prevStats.bestTime9x9 === 0 ? timer : Math.min(prevStats.bestTime9x9, timer);
+        }
+
         onDataUpdate({
             ...gameData,
             sudoku: {
                 gamesWon: prevStats.gamesWon + 1,
-                bestTime: newBestTime
+                bestTime6x6: newBestTime6x6,
+                bestTime9x9: newBestTime9x9
             }
         });
     };
@@ -328,6 +330,10 @@ const Sudoku: React.FC<SudokuProps> = ({ gameData, onDataUpdate, navigateHome })
         startNewGame(difficulty, newSize);
     };
 
+    const getBestTime = () => {
+        return gridSize === 6 ? gameData.sudoku.bestTime6x6 : gameData.sudoku.bestTime9x9;
+    };
+
     return (
         <div className="flex flex-col items-center p-4 bg-gray-900 rounded-2xl shadow-lg w-full max-w-md animate-fade-in select-none">
             
@@ -363,7 +369,10 @@ const Sudoku: React.FC<SudokuProps> = ({ gameData, onDataUpdate, navigateHome })
                         <option value="Hard">Hard</option>
                     </select>
                 </div>
-                <div className="font-mono text-xl">{formatTime(timer)}</div>
+                <div className="flex flex-col items-end">
+                    <div className="font-mono text-xl">{formatTime(timer)}</div>
+                    <div className="text-xs text-gray-500">Best: {formatTime(getBestTime())}</div>
+                </div>
             </div>
 
             {/* Board Container */}

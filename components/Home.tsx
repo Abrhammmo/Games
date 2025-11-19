@@ -72,8 +72,12 @@ const Home: React.FC<HomeProps> = ({ gameData, navigateTo, userId }) => {
                         <span className="font-bold text-amber-400 text-lg">{gameData.tetris.highScore}</span>
                     </div>
                     <div className="flex justify-between items-center bg-gray-800/50 p-2 rounded-md">
-                        <span className="font-semibold text-gray-300">Sudoku Best Time:</span>
-                        <span className="font-bold text-rose-400 text-lg">{formatTime(gameData.sudoku.bestTime)}</span>
+                        <span className="font-semibold text-gray-300">Sudoku (6x6) Best:</span>
+                        <span className="font-bold text-rose-400 text-lg">{formatTime(gameData.sudoku.bestTime6x6)}</span>
+                    </div>
+                    <div className="flex justify-between items-center bg-gray-800/50 p-2 rounded-md">
+                        <span className="font-semibold text-gray-300">Sudoku (9x9) Best:</span>
+                        <span className="font-bold text-rose-400 text-lg">{formatTime(gameData.sudoku.bestTime9x9)}</span>
                     </div>
                 </div>
             </div>

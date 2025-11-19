@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import Home from './components/Home';
 import TicTacToe from './components/TicTacToe';
 import Snake from './components/Snake';
-import Tetris from './components/Tetris'; // Import the new Tetris component
+import Tetris from './components/Tetris';
+import Sudoku from './components/Sudoku'; // Import Sudoku
 import { getGameData, updateGameData, appId, performAnonymousSignIn, isDemoMode } from './services/firebaseService';
 import type { GameData, View } from './types';
 import { LoaderIcon, InfoIcon } from './components/Icons';
@@ -89,8 +91,10 @@ const App: React.FC = () => {
                 return <TicTacToe gameData={gameData} onDataUpdate={handleDataUpdate} navigateHome={() => navigateTo('HOME')} />;
             case 'SNAKE':
                 return <Snake gameData={gameData} onDataUpdate={handleDataUpdate} navigateHome={() => navigateTo('HOME')} />;
-            case 'TETRIS': // Add case for Tetris
+            case 'TETRIS':
                 return <Tetris gameData={gameData} onDataUpdate={handleDataUpdate} navigateHome={() => navigateTo('HOME')} />;
+            case 'SUDOKU':
+                return <Sudoku gameData={gameData} onDataUpdate={handleDataUpdate} navigateHome={() => navigateTo('HOME')} />;
             case 'HOME':
             default:
                 return <Home gameData={gameData} navigateTo={navigateTo} userId={userId} />;

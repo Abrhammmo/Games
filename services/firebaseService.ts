@@ -76,8 +76,19 @@ const DEFAULT_GAME_DATA: GameData = {
     },
     sudoku: {
         gamesWon: 0,
-        bestTime: 0,
+        bestTime6x6: 0,
+        bestTime9x9: 0,
     }
+};
+
+// Helper to migrate legacy Sudoku data (where bestTime was a single field)
+const migrateSudokuData = (data: any): any => {
+    const sudoku = { ...DEFAULT_GAME_DATA.sudoku, ...(data.sudoku || {}) };
+    // If legacy bestTime exists but bestTime9x9 is 0, assume legacy was 9x9
+    if (data.sudoku && data.sudoku.bestTime && !sudoku.bestTime9x9) {
+        sudoku.bestTime9x9 = data.sudoku.bestTime;
+    }
+    return sudoku;
 };
 
 const getGameDataRef = (userId: string, currentAppId: string): firebase.firestore.DocumentReference | null => {
@@ -96,7 +107,7 @@ export const getGameData = async (userId: string, currentAppId: string): Promise
                     ticTacToe: { ...DEFAULT_GAME_DATA.ticTacToe, ...parsedData.ticTacToe },
                     snake: { ...DEFAULT_GAME_DATA.snake, ...parsedData.snake },
                     tetris: { ...DEFAULT_GAME_DATA.tetris, ...parsedData.tetris },
-                    sudoku: { ...DEFAULT_GAME_DATA.sudoku, ...parsedData.sudoku }
+                    sudoku: migrateSudokuData(parsedData)
                 };
             } catch (e) {
                 console.error("Could not parse local data, returning default.", e);
@@ -118,7 +129,7 @@ export const getGameData = async (userId: string, currentAppId: string): Promise
             ticTacToe: { ...DEFAULT_GAME_DATA.ticTacToe, ...data.ticTacToe },
             snake: { ...DEFAULT_GAME_DATA.snake, ...data.snake },
             tetris: { ...DEFAULT_GAME_DATA.tetris, ...data.tetris },
-            sudoku: { ...DEFAULT_GAME_DATA.sudoku, ...data.sudoku }
+            sudoku: migrateSudokuData(data)
         };
     } else {
         console.log("No such document! Creating with default data.");

@@ -17,7 +17,8 @@ export interface TetrisStats {
 
 export interface SudokuStats {
     gamesWon: number;
-    bestTime: number; // stored in seconds, 0 means no record yet
+    bestTime6x6: number;
+    bestTime9x9: number;
 }
 
 export interface GameData {
